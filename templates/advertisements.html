@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block login %}
+<form method="POST" action="/addad">
+  <label style=" display: inline-block;width: 35px">Title: </label> <input type="text" name="title"  style="position:relative; left: 100px " required/><br/>
+  <label style=" display: inline-block;width: 35px">Description:</label>  <input type="text" name="description" style="position:relative; left: 100px" required/><br/>
+  <label style=" display: inline-block;width: 35px">Category:</label> <input type="text" name="category" style="position:relative; left: 100px" required/><br/>
+
+  <p><input type="submit" value="Apply Advertisement"></p>
+</form><br>
+{% endblock %}
+{% block content %}
+<form id="deleteAd" action="/deletead" method="post" style="display: none;">
+    <input type="hidden" name="ad_id" value="">
+</form>
+<script>
+      function submitForm(temp){
+          temp=parseInt(temp);
+
+          document.getElementsByName('ad_id')[0].value = temp;
+          document.getElementById('deleteAd').submit();
+
+      }
+</script>
+<table>
+    <tr style="background-color: blue;
+            color: white;">
+    <th>Title</th>
+    <th>Description</th>
+    <th>Category</th>
+    <th>Activate/Deactivate</th>
+    </tr>
+    {% for tuples in data %}
+    <tr>
+        <th>{{tuples[1]}}</th>
+        <th>{{tuples[2]}}</th>
+        <th>{{tuples[6]}}</th>
+        <th> <a href="javascript:void(0);" onclick="submitForm('{{tuples[0]}}')">{{tuples[3]}}</a></th>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
+

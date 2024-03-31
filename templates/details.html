@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table style="border: 2px solid lightslategray">
+    <tr>
+        <th style="background-color: blue;color: white;">Title</th>
+        <th>{{data[3]}}</th>
+    </tr>
+    <tr>
+        <th style="background-color: blue;color: white;">Description</th>
+        <th>{{data[4]}}</th>
+    </tr>
+    <tr>
+        <th style="background-color: blue;color: white;">Category</th>
+        <th>{{data[5]}}</th>
+    </tr>
+    <tr>
+        <th style="background-color: blue;color: white;">Contact Full Name</th>
+        <th>{{data[0]}}</th>
+    </tr>
+    <tr>
+        <th style="background-color: blue;color: white;">Contact E-mail</th>
+        <th>{{data[2]}}</th>
+    </tr>
+    <tr>
+        <th style="background-color: blue;color: white;">Contact Telephone Number</th>
+        <th>{{data[1]}}</th>
+    </tr>
+
+</table>
+{% endblock %}}

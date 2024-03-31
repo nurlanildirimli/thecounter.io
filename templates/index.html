@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+{% block login %}
+{% if username %}
+    <p>Logged in as <b>{{ username }}</b></p>
+{% else %}
+    <h1>{% block title %}Log In{% endblock %}</h1>
+    <form action="/applyLogin" method="POST">
+        <p>Username: <input type="text" name="username" required/></p>
+        <p>Password: <input type="password" name ="password" required/></p>
+        <p><input type="submit" value="Login"/></p>
+    </form>
+    {% if check %}
+          <br/>
+            <label>Your username or password is wrong try again !!!</label>
+    {% endif %}
+    <p>Do you have an account? If not, click <a href="/register">here</a> to create one.</p>
+
+{% endif %}
+
+
+{% endblock %}
+

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="static/mainstyle.css">
+    <script>
+
+        function showMatches(str){
+            document.getElementById("search_tables").innerHTML = "";
+        if (str.length == 0){
+            document.getElementById("notfound").style.visibility="hidden";
+            document.getElementById("search_tables").style.visibility="hidden";
+        }
+        else{
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    var row;
+                    var response= this.responseText;
+                    document.getElementsByName("searchbar").value;
+                    if(response === "" && str.length !== 0){
+                        document.getElementById("notfound").style.visibility="visible";
+                        document.getElementById("search_tables").style.visibility="hidden";
+                    }
+                    else{
+                        document.getElementById("notfound").style.visibility="hidden";
+                        document.getElementById("search_tables").style.visibility="visible";
+                        reply=response.split(",");
+                        console.log(reply);
+                        var categories=[];
+                        for(var i=3; i<reply.length;i+=4) {
+                            if(!categories.includes(reply[i])){
+                                categories.push(reply[i]);
+                            }
+                        }
+                        var lastcategory=categories[0];
+                        var labelt = document.createElement("p");
+                        document.getElementById("search_tables").appendChild(labelt);
+                        var tablenew = document.createElement("table");
+                        document.getElementById("search_tables").appendChild(tablenew);
+                        row= tablenew.insertRow(-1);
+                        row.insertCell(0).innerText  = "Title";
+                        row.insertCell(1).innerText  = "Description";
+                        row.insertCell(2).innerText  = "Contact Name";
+                        row.insertCell(3).innerText = "            ";
+                        var seemore;
+                        labelt.textContent=lastcategory;
+                        console.log(categories);
+                        for(var j=0; j<categories.length;j++) {
+                            for (var i = 0; i < reply.length; i += 4) {
+                                if(categories[j]!==reply[i+3]){
+
+                                    continue;
+                                }
+                                if(categories[j]!==lastcategory){
+
+
+                                    labelt = document.createElement("p");
+                                    labelt.textContent=categories[j];
+                                    document.getElementById("search_tables").appendChild(labelt);
+
+                                    tablenew = document.createElement("table");
+                                    document.getElementById("search_tables").appendChild(tablenew);
+                                    row= tablenew.insertRow(-1);
+                                    row.insertCell(0).innerText  = "Title";
+                                    row.insertCell(1).innerText  = "Description";
+                                    row.insertCell(2).innerText  = "Contact Name";
+                                    row.insertCell(3).innerText = "            ";
+                                    row= tablenew.insertRow(-1);
+                                    row.insertCell(0).innerText = reply[i];
+                                    row.insertCell(1).innerText = reply[i + 1];
+                                    row.insertCell(2).innerText = reply[i + 2];
+
+                                    seemore=document.createElement('a');
+                                    seemore.dataset.customValue=reply[i]; //This custom value would save the title on link to reach details later.
+                                    seemore.href="javascript:void(0);";
+                                    seemore.onclick=function() {
+                                        submitdetails(this.dataset.customValue);
+                                    };
+                                    seemore.innerText = "See More";
+                                    row.insertCell(3).appendChild(seemore);
+
+                                    lastcategory=categories[j];
+                                }
+                                else {
+                                    row = tablenew.insertRow(-1);
+                                    row.insertCell(0).innerText = reply[i];
+                                    row.insertCell(1).innerText = reply[i + 1];
+                                    row.insertCell(2).innerText = reply[i + 2];
+
+                                    seemore=document.createElement('a');
+                                    seemore.dataset.customValue=reply[i]; //This custom value would save the title on link to reach details later.
+                                    seemore.href="javascript:void(0);";
+                                    seemore.onclick=function() {
+                                        submitdetails(this.dataset.customValue);
+                                    };
+                                    seemore.innerText = "See More";
+                                    row.insertCell(3).appendChild(seemore);
+
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+            };
+            xmlhttp.open("GET","/getmatches?q=" + str, true);
+            xmlhttp.send();
+        }
+        }
+
+        function submitdetails(title){
+            console.log("title:",title);
+            document.getElementsByName('addetails')[0].value = title; //This command returns multiple results we should take the first
+            document.getElementById('addetailsform').submit();
+        }
+    </script>
+</head>
+<body style="overflow: auto;">
+<p>{{ msg|safe }}</p>
+<div style="width: 100%; overflow: hidden">
+    <div style="float: left;">
+        <h1 style="background-color: mediumpurple; color:black ; width: fit-content;display: inline-block; "><a href="/homepage">Advertisement Cyprus!</a></h1>
+        <div  style=" text-align:left;">
+        {% if "username" in session %}
+            <p> <a href="/homepage">Homepage</a> | <a href="/ads">My Advertisements</a> | <a href="/myProfile">My Profile</a> | <a href="/logout">Logout</a></p>
+        {% else %}
+            <p> <a href="/homepage">Homepage</a> | <a href="/register">Register</a><p>
+        {% endif %}
+
+        </div>
+    </div>
+
+    <div style=" float: right; margin-right:45%;display: inline-block;">
+        <h3 style="margin-left: 70px">Search</h3>
+        <input type="text" name="searchbar"  style="margin-left:15px " onkeyup="showMatches(this.value)" required/><br/>
+
+    </div>
+
+</div>
+<br/>
+
+
+
+
+<section style="margin-bottom: 120px;width:fit-content;display: inline-block;position: absolute;">
+
+    {% block login %}{% endblock %}
+    {% block content %}{% endblock %}
+
+</section>
+<div id="search_tables" style= "background-color: whitesmoke; padding: 10px;border: 1px solid lightslategray ; visibility: hidden;left: 50%;margin-left: -100px; position: absolute" >
+
+</div>
+<p id="notfound" style=" visibility: hidden;left: 50%;margin-left: -100px; position: absolute" >No advertisement found.</p>
+
+
+
+<form id="addetailsform" action="/details" method="POST" style="display: none;">
+    <input type="hidden" name="addetails" value=""/>
+</form>
+
+<div>
+
+</div>
+</body>
+</html>

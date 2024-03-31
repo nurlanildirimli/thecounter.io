@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        label{
+            margin: 5px ;
+            text-align: left;
+
+        }
+
+        form{
+            width: fit-content;
+            margin: 20px ;
+        }
+    </style>
+<script>
+  function checkCredentials()
+  {
+    let password = document.forms["reqForm"]["password"].value;
+    let username = document.forms["reqForm"]["username"].value;
+
+    const pass_len = password.length;
+
+     if (pass_len < 10) {
+         document.getElementById("error").innerHTML="Password must be longer than 10 characters";
+        return false;
+     }
+
+     let upperCase = false;
+     let lowerCase = false;
+     let digit = false;
+     let specialChar = false;
+
+     for (let i = 0; i < pass_len; i++) {
+        const char = password.charAt(i);
+
+        if (!upperCase && char === char.toUpperCase()) {
+          upperCase = true;
+        }
+
+        if (!lowerCase && char === char.toLowerCase()) {
+          lowerCase = true;
+        }
+
+        if (!digit && !isNaN(char)) {
+          digit = true;
+        }
+
+        if (!specialChar && ['+', '!', '*', '-'].includes(char)) {
+          specialChar = true;
+        }
+
+        if (upperCase && lowerCase && digit && specialChar) {
+          return true;
+        }
+    }
+     document.getElementById("error").innerHTML="Password isn't suitable for credentials";
+    return false;
+  }
+
+</script>
+  <form name="reqForm" method="POST" action="/applyRegister" onsubmit="return checkCredentials()">
+    <label>Username</label>
+    <input style="width: 85%; padding: 8px;margin: 3px ;" type="text" name="username" required/>
+    <br/>
+    <label>Password</label>
+    <input style="width: 85%; padding: 8px;margin: 3px ;" type="password" name="password" id="password" required/>
+    <br/>
+    <label>Full Name</label>
+    <input style="width: 85%; padding: 8px;margin: 3px ;" type="text" name="fullname" required/>
+<br/>
+    <label>Email</label>
+    <input style="width: 85%; padding: 8px;margin: 3px ;" type="text" name="email" required/>
+<br/>
+    <label>Telephone Number</label>
+    <input style="width: 85%; padding: 8px;margin: 3px ;" type="text" name="telNo" required/>
+<br/>
+      <br/>
+    <input type="submit" value="Register"/>
+      <p id="error"></p>
+      {% if check %}
+      <br/>
+        <label>Your username is taken try another one !!!</label>
+      {% endif %}
+  </form>
+{% endblock %}
+
